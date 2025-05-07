@@ -1,0 +1,90 @@
+description & inferred requirements
+Core purpose
+This is a Learning Management System (LMS) back‑end implemented in Java with Spring Boot. It exposes RESTful endpoints to manage users, courses, lessons, assessments, notifications and performance tracking.
+
+User management & security
+
+Users can sign up and sign in via JWT‑protected endpoints (/api/auth/signup, /api/auth/signin).
+
+User profiles (name, email, role) can be viewed and updated.
+
+Roles (e.g. student, instructor, admin) drive authorization.
+
+All API calls requiring authentication validate the JWT token passed in the Authorization header.
+
+Course & lesson management
+
+Instructors can create, update, delete, and list courses (CourseController).
+
+Within each course, they can add lessons (title, content), and upload materials.
+
+Upon lesson creation, the system publishes an AddedLessonEvent on an in‑memory EventBus, which triggers notifications to enrolled students.
+
+Enrollment & notifications
+
+Students may enroll in courses (publishes an EnrollmentEvent).
+
+A lightweight notification module listens for events (lesson added, enrollment, material uploaded) and persists notifications.
+
+Notifications can be retrieved via a REST endpoint so that clients can show “new lesson available,” etc.
+
+Assessment & performance
+
+The system supports two types of assessments: Assignments (long‑form deliverables) and Quizzes (automatically graded).
+
+There is a QuestionBank for quiz questions; quizzes pull from this bank.
+
+Students submit assignments and quiz attempts (Submission, QuizAttempt entities).
+
+Instructors can provide feedback on submissions.
+
+A PerformanceService aggregates grades and feedback, enabling progress tracking.
+
+Data persistence
+
+All entities (User, Course, Lesson, Assignment, Quiz, Submission, Notification, etc.) are JPA‑mapped and stored in a relational database.
+
+Standard Spring Data JPA repositories provide CRUD operations.
+
+Validation & error handling
+
+DTOs (SignupRequest, SignInRequest, LessonRequest, etc.) use Jakarta Validation (@Valid).
+
+Controllers return appropriate HTTP status codes: 201 Created, 200 OK, 400 Bad Request, etc.
+
+Automated testing
+
+Basic unit/integration tests exist for core controllers (CourseControllerTest, UserControllerTest).
+
+Tests boot up the Spring context and verify endpoints.
+
+Inferred high‑level requirements
+User stories
+
+As a student, I want to register, log in, browse courses, enroll, view lessons and receive notifications.
+
+As an instructor, I want to create courses, add lessons, upload materials, create assignments/quizzes, and review submissions.
+
+As an administrator, I want to manage users, view overall performance metrics, and configure system settings.
+
+Functional requirements
+
+Authentication (JWT), authorization by role
+
+CRUD for courses, lessons, assessments, feedback, notifications
+
+Event‑driven notifications on key actions
+
+Submission and automated grading for quizzes
+
+Feedback workflow for assignments
+
+Non‑functional requirements
+
+RESTful API conforming to JSON standards
+
+Secure: password hashing, JWT expiration, role checks
+
+Extensible: modular package structure (user, course, assessment, notification)
+
+Testable: Spring Boot test framework in place
