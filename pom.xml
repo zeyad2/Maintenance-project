@@ -11,9 +11,9 @@
 	</parent>
 
 	<groupId>com.app</groupId>
-	<artifactId>LMS</artifactId>
+	<artifactId>lms</artifactId>
 	<version>0.0.1-SNAPSHOT</version>
-	<name>LMS</name>
+	<name>lms</name>
 	<description>LMS project</description>
 	<url/>
 
@@ -47,6 +47,7 @@
 			<groupId>org.springframework.boot</groupId>
 			<artifactId>spring-boot-starter-security</artifactId>
 		</dependency>
+
 
 		<!-- Spring Boot Starter Data JPA (For database access) -->
 		<dependency>
