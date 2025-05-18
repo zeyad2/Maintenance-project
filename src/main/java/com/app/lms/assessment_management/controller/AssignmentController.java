@@ -56,13 +56,13 @@ public class AssignmentController {
 
         String role = jwtConfig.getRoleFromToken(token);
         Long instructorId = jwtConfig.getUserIdFromToken(token);
-        if (!ROLE_INSTRUCTOR.equals(role)) {
-            return new ResponseEntity<>(UNAUTHORIZED, HttpStatus.FORBIDDEN);
-        }
-        Course course = courseService.findCourseById(courseId);
-        if (!course.getInstructor().getId().equals(instructorId)) {
-            return new ResponseEntity<>(UNAUTHORIZED_OWNERSHIP, HttpStatus.FORBIDDEN);
-        }
+//        if (!ROLE_INSTRUCTOR.equals(role)) {
+//            return new ResponseEntity<>(UNAUTHORIZED, HttpStatus.FORBIDDEN);
+//        }
+//        Course course = courseService.findCourseById(courseId);
+//        if (!course.getInstructor().getId().equals(instructorId)) {
+//            return new ResponseEntity<>(UNAUTHORIZED_OWNERSHIP, HttpStatus.FORBIDDEN);
+//        }
 
         try {
             LocalDateTime parsedDeadline = LocalDateTime.parse(deadline);
