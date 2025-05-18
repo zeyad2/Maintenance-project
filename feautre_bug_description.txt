@@ -12,7 +12,7 @@ Description: Locate and delete the obsolete field in AssignmentService, update a
 
 SCRUM‑8 (Maintainability):
 Summary: Rename Java packages to match new conventions.
-Description: Update package names project‑wide (e.g. com.app.lms.course → com.app.lms.courseManagement), adjust all import statements, then rebuild and run tests to ensure everything compiles.
+Description: Update package names project‑wide (e.g. com.app.lms.course → com.app.lms.course_management), adjust all import statements, then rebuild and run tests to ensure everything compiles.
 
 SCRUM‑9 (Maintainability):
 Summary: Strengthen exception handling in QuizService.java.
