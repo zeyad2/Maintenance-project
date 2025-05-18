@@ -1,11 +1,11 @@
 package com.app.lms.course_management.controller;
 import java.util.List;
-import com.app.lms.DTO.*;
+import com.app.lms.dto.*;
 import com.app.lms.course_management.service.LessonService;
-import com.app.lms.notification_management.eventBus.EventBus;
-import com.app.lms.notification_management.eventBus.events.AddedLessonEvent;
-import com.app.lms.notification_management.eventBus.events.EnrollmentEvent;
-import com.app.lms.notification_management.eventBus.events.MaterialUploadedEvent;
+import com.app.lms.notification_management.event_bus.event_bus;
+import com.app.lms.notification_management.event_bus.events.AddedLessonEvent;
+import com.app.lms.notification_management.event_bus.events.EnrollmentEvent;
+import com.app.lms.notification_management.event_bus.events.MaterialUploadedEvent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -26,14 +26,14 @@ public class CourseController {
     private final MediaService mediaservice;
     private final JwtConfig jwtConfig;
     private final LessonService lessonService;
-    private final EventBus eventBus;
-    public CourseController(CourseService courseService, MediaService mediaservice, JwtConfig jwtConfig, LessonService lessonService, EventBus eventBus)
+    private final event_bus event_bus;
+    public CourseController(CourseService courseService, MediaService mediaservice, JwtConfig jwtConfig, LessonService lessonService, event_bus event_bus)
     {
         this.courseService = courseService;
         this.mediaservice = mediaservice;
         this.jwtConfig = jwtConfig;
         this.lessonService = lessonService;
-        this.eventBus = eventBus;
+        this.event_bus = event_bus;
     }
 
     @PostMapping("/create")
@@ -195,7 +195,7 @@ public class CourseController {
                 if(created != null)
                 {
                     AddedLessonEvent event = new AddedLessonEvent(created.getCourse().getId());
-                    eventBus.publish(event);
+                    event_bus.publish(event);
                 }
                 return new ResponseEntity<>("Lesson created successfully with ID: " + created.getId(), HttpStatus.CREATED);
             } else {
@@ -311,7 +311,7 @@ public class CourseController {
             }
 
             MaterialUploadedEvent event = new MaterialUploadedEvent(lessonId);
-            eventBus.publish(event);
+            event_bus.publish(event);
 
             return new ResponseEntity<>(response, HttpStatus.CREATED);
         } catch (Exception e) {
@@ -342,7 +342,7 @@ public class CourseController {
             Boolean enrolled = courseService.enrollStudentInCourse(courseId, studentId);
             if(enrolled){
                 EnrollmentEvent event = new EnrollmentEvent(studentId, courseId);
-                eventBus.publish(event);
+                event_bus.publish(event);
             }
             return ResponseEntity.ok("Student enrolled successfully");
         } catch (Exception e) {

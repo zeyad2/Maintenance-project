@@ -1,6 +1,6 @@
 package com.app.lms.assessment_management.controller;
 
-import com.app.lms.DTO.FeedbackRequest;
+import com.app.lms.dto.FeedbackRequest;
 import com.app.lms.assessment_management.model.Assignment;
 import com.app.lms.assessment_management.model.Feedback;
 import com.app.lms.assessment_management.model.Submission;
@@ -9,9 +9,9 @@ import com.app.lms.assessment_management.service.FeedbackService;
 import com.app.lms.config.JwtConfig;
 import com.app.lms.course_management.model.Course;
 import com.app.lms.course_management.service.CourseService;
-import com.app.lms.notification_management.eventBus.EventBus;
-import com.app.lms.notification_management.eventBus.events.AssignmentCreatedEvent;
-import com.app.lms.notification_management.eventBus.events.FeedbackCreatedEvent;
+import com.app.lms.notification_management.event_bus.event_bus;
+import com.app.lms.notification_management.event_bus.events.AssignmentCreatedEvent;
+import com.app.lms.notification_management.event_bus.events.FeedbackCreatedEvent;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -29,16 +29,20 @@ public class AssignmentController {
     private final JwtConfig jwtConfig;
     private final SubmissionService submissionService;
     private final FeedbackService feedbackService;
-    private final EventBus eventBus;
+    private final event_bus event_bus;
     private final CourseService courseService;
 
-    public AssignmentController(AssignmentService assignmentService, JwtConfig jwtConfig, SubmissionService submissionService, FeedbackService feedbackService, EventBus eventBus, CourseService courseService) {
+    private static final String ROLE_INSTRUCTOR = "INSTRUCTOR";
+    private static final String UNAUTHORIZED = "Unauthorized";
+    private static final String UNAUTHORIZED_OWNERSHIP = "Unauthorized: You do not own this course";
+
+    public AssignmentController(AssignmentService assignmentService, JwtConfig jwtConfig, SubmissionService submissionService, FeedbackService feedbackService, event_bus event_bus, CourseService courseService) {
         this.assignmentService = assignmentService;
         this.jwtConfig = jwtConfig;
         this.submissionService = submissionService;
         this.feedbackService = feedbackService;
         this.courseService = courseService;
-        this.eventBus = eventBus;
+        this.event_bus = event_bus;
     }
 
     @PostMapping(value = "/create", consumes = MediaType.MULTIPART_FORM_DATA_VALUE)
@@ -52,12 +56,12 @@ public class AssignmentController {
 
         String role = jwtConfig.getRoleFromToken(token);
         Long instructorId = jwtConfig.getUserIdFromToken(token);
-        if (!"INSTRUCTOR".equals(role)) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
+        if (!ROLE_INSTRUCTOR.equals(role)) {
+            return new ResponseEntity<>(UNAUTHORIZED, HttpStatus.FORBIDDEN);
         }
         Course course = courseService.findCourseById(courseId);
         if (!course.getInstructor().getId().equals(instructorId)) {
-            return new ResponseEntity<>("Unauthorized: You do not own this course", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(UNAUTHORIZED_OWNERSHIP, HttpStatus.FORBIDDEN);
         }
 
         try {
@@ -71,7 +75,7 @@ public class AssignmentController {
             Assignment created = assignmentService.createAssignment(assignment, courseId, file);
 
             AssignmentCreatedEvent event = new AssignmentCreatedEvent(created.getId());
-            eventBus.publish(event);
+            event_bus.publish(event);
 
             return new ResponseEntity<>("Assignment created successfully", HttpStatus.CREATED);
         } catch (Exception e) {
@@ -90,7 +94,7 @@ public class AssignmentController {
         Long studentId = jwtConfig.getUserIdFromToken(token);
 
         if (!"STUDENT".equals(role)) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(UNAUTHORIZED, HttpStatus.FORBIDDEN);
         }
         Assignment assignment = assignmentService.getAssignmentById(assignmentId);
         boolean enrolled = courseService.isEnrolled(assignment.getCourse().getId(), studentId);
@@ -128,12 +132,12 @@ public class AssignmentController {
         String role = jwtConfig.getRoleFromToken(token);
         Long instructorId = jwtConfig.getUserIdFromToken(token);
 
-        if (!"INSTRUCTOR".equals(role)) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
+        if (!ROLE_INSTRUCTOR.equals(role)) {
+            return new ResponseEntity<>(UNAUTHORIZED, HttpStatus.FORBIDDEN);
         }
         Assignment assignment = assignmentService.getAssignmentById(assignmentId);
         if(!assignment.getCourse().getInstructor().getId().equals(instructorId)){
-            return new ResponseEntity<>("Unauthorized: You do not own this course", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(UNAUTHORIZED_OWNERSHIP, HttpStatus.FORBIDDEN);
         }
 
         List<Submission> submissions = submissionService.getAllSubmissions(assignmentId);
@@ -145,19 +149,19 @@ public class AssignmentController {
         String role = jwtConfig.getRoleFromToken(token);
         Long instructorId = jwtConfig.getUserIdFromToken(token);
 
-        if (!"INSTRUCTOR".equals(role)) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
+        if (!ROLE_INSTRUCTOR.equals(role)) {
+            return new ResponseEntity<>(UNAUTHORIZED, HttpStatus.FORBIDDEN);
         }
         Course course = submissionService.getSubmission(feedbackRequest.getSubmissionID()).getAssignment().getCourse();
         if(!course.getInstructor().getId().equals(instructorId)){
-            return new ResponseEntity<>("Unauthorized: You do not own this course", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(UNAUTHORIZED_OWNERSHIP, HttpStatus.FORBIDDEN);
         }
 
         try
         {
             Feedback feedback = feedbackService.giveFeedback(feedbackRequest);
             FeedbackCreatedEvent event = new FeedbackCreatedEvent(feedback.getId());
-            eventBus.publish(event);
+            event_bus.publish(event);
             return new ResponseEntity<>("Feedback given successfully", HttpStatus.CREATED);
         }
         catch (Exception e)
@@ -173,10 +177,10 @@ public class AssignmentController {
         Long studentId = jwtConfig.getUserIdFromToken(token);
 
         if (!"STUDENT".equals(role)) {
-            return new ResponseEntity<>("Unauthorized", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(UNAUTHORIZED, HttpStatus.FORBIDDEN);
         }
         if(!submissionService.getSubmission(submissionId).getStudent().getId().equals(studentId)){
-            return new ResponseEntity<>("Unauthorized: You are not authorized to view this feedback", HttpStatus.FORBIDDEN);
+            return new ResponseEntity<>(UNAUTHORIZED_OWNERSHIP, HttpStatus.FORBIDDEN);
         }
 
         try {

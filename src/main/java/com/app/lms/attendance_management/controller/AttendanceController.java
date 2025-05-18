@@ -26,7 +26,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.lms.DTO.StudentInfoDTO;
+import com.app.lms.dto.StudentInfoDTO;
 import com.app.lms.attendance_management.model.Attendance;
 import com.app.lms.attendance_management.model.OTP;
 import com.app.lms.attendance_management.service.AttendanceService;

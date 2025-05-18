@@ -1,7 +1,7 @@
 package com.app.lms.assessment_management.controller;
 
-import com.app.lms.DTO.FeedbackDTO;
-import com.app.lms.DTO.QuizAttemptDTO;
+import com.app.lms.dto.FeedbackDTO;
+import com.app.lms.dto.QuizAttemptDTO;
 import com.app.lms.assessment_management.service.PerformanceService;
 import com.app.lms.config.JwtConfig;
 import com.app.lms.course_management.service.CourseService;

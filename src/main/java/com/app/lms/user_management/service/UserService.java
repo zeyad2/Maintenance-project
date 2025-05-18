@@ -4,7 +4,7 @@ import com.app.lms.user_management.model.User;
 import com.app.lms.user_management.repository.UserRepository;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
-import com.app.lms.DTO.SignupRequest;
+import com.app.lms.dto.SignupRequest;
 
 import java.util.Optional;
 

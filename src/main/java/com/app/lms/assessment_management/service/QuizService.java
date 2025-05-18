@@ -1,6 +1,6 @@
 package com.app.lms.assessment_management.service;
 
-import com.app.lms.DTO.*;
+import com.app.lms.dto.*;
 import com.app.lms.assessment_management.model.*;
 import com.app.lms.assessment_management.repository.QuestionRepository;
 import com.app.lms.assessment_management.repository.QuizAttemptRepository;
@@ -29,7 +29,9 @@ public class QuizService {
     private final QuestionRepository questionRepository;
     private final QuizAttemptRepository quizAttemptRepository;
 
-    QuizService(QuizRepository quizRepository, QuestionBankRepository questionBankRepository, CourseService courseService, UserRepository userRepository, QuestionRepository questionRepository, QuizAttemptRepository quizAttemptRepository) {
+    QuizService(QuizRepository quizRepository, QuestionBankRepository questionBankRepository,
+            CourseService courseService, UserRepository userRepository, QuestionRepository questionRepository,
+            QuizAttemptRepository quizAttemptRepository) {
         this.quizRepository = quizRepository;
         this.questionBankRepository = questionBankRepository;
         this.courseService = courseService;
@@ -37,10 +39,12 @@ public class QuizService {
         this.questionRepository = questionRepository;
         this.quizAttemptRepository = quizAttemptRepository;
     }
+
     // Create a new quiz for a course
     public Quiz createQuiz(QuizRequest quizRequest) {
         Course course = courseService.findCourseById(quizRequest.getCourseID());
-        QuestionBank questionBank = questionBankRepository.findByCourseId(course.getId()).orElseThrow(() -> new RuntimeException("Question bank not found for the course"));
+        QuestionBank questionBank = questionBankRepository.findByCourseId(course.getId())
+                .orElseThrow(() -> new RuntimeException("Question bank not found for the course"));
 
         List<Question> questions = questionBank.getQuestions();
         Collections.shuffle(questions);
@@ -59,11 +63,29 @@ public class QuizService {
         return quizRepository.save(quiz);
     }
 
+
+     private static class QuizNotFoundException extends RuntimeException {
+        public QuizNotFoundException(String message) {
+            super(message);
+        }
+    }
+
+    private static class StudentNotFoundException extends RuntimeException {
+        public StudentNotFoundException(String message) {
+            super(message);
+        }
+    }
+
+    private static class QuizAlreadySubmittedException extends RuntimeException {
+        public QuizAlreadySubmittedException(String message) {
+            super(message);
+        }
+    }
     // Update quiz details
     public Quiz updateQuiz(Long id, QuizRequest quizDetails) {
         Optional<Quiz> existingQuizOptional = quizRepository.findById(id);
         if (existingQuizOptional.isEmpty()) {
-            return null;  // Return null if quiz not found
+            return null; // Return null if quiz not found
         }
         Quiz existingQuiz = existingQuizOptional.get();
         existingQuiz.setTitle(quizDetails.getTitle());
@@ -76,7 +98,7 @@ public class QuizService {
     public Quiz addQuestionsToQuiz(Long quizId, List<Question> questions) {
         Optional<Quiz> quizOptional = quizRepository.findById(quizId);
         if (quizOptional.isEmpty()) {
-            return null;  // Return null if quiz not found
+            return null; // Return null if quiz not found
         }
         Quiz quiz = quizOptional.get();
         quiz.getQuestions().addAll(questions);
@@ -87,7 +109,7 @@ public class QuizService {
     public boolean removeQuestionFromQuiz(Long quizId, Long questionId) {
         Optional<Quiz> quizOptional = quizRepository.findById(quizId);
         if (quizOptional.isEmpty()) {
-            return false;  // Return false if quiz not found
+            return false; // Return false if quiz not found
         }
         Quiz quiz = quizOptional.get();
         boolean removed = quiz.getQuestions().removeIf(question -> question.getId().equals(questionId));
@@ -105,23 +127,24 @@ public class QuizService {
                         quiz.getId(),
                         quiz.getTitle(),
                         quiz.getStartDate(),
-                        quiz.getDurationInMinutes()
-                ))
+                        quiz.getDurationInMinutes()))
                 .collect(Collectors.toList());
     }
 
-    public QuizAttempt submitQuiz(SubmitQuizRequest request){
-        Quiz quiz = quizRepository.findById(request.getQuizId()).orElseThrow(() -> new RuntimeException("Quiz not found"));
-        User student = userRepository.findById(request.getStudentId()).orElseThrow(() -> new RuntimeException("Student not found"));
-        if(quizAttemptRepository.existsByStudentIdAndQuizId(student.getId(), quiz.getId())){
-            throw new RuntimeException("Student submitted this quiz before");
+    public QuizAttempt submitQuiz(SubmitQuizRequest request) {
+        Quiz quiz = quizRepository.findById(request.getQuizId())
+                .orElseThrow(() -> new QuizNotFoundException("Quiz not found"));
+        User student = userRepository.findById(request.getStudentId())
+                .orElseThrow(() -> new StudentNotFoundException("Student not found"));
+        if (quizAttemptRepository.existsByStudentIdAndQuizId(student.getId(), quiz.getId())) {
+            throw new QuizAlreadySubmittedException("Student submitted this quiz before");
         }
         QuizAttempt attempt = new QuizAttempt();
         attempt.setQuiz(quiz);
         attempt.setStudent(student);
         attempt.setAttemptDate(new Date());
 
-        AtomicInteger totalScore= new AtomicInteger();
+        AtomicInteger totalScore = new AtomicInteger();
 
         List<Answer> savedAnswers = request.getAnswers().stream().map(answerRequest -> {
             Question question = questionRepository.findById(answerRequest.getQuestionId())
@@ -161,8 +184,7 @@ public class QuizService {
                         question.getId(),
                         question.getQuestionText(),
                         question.getPoints(),
-                        question.getOptions()
-                ))
+                        question.getOptions()))
                 .collect(Collectors.toList());
 
         // Create and return the QuizDetailsDTO
@@ -171,12 +193,10 @@ public class QuizService {
                 quiz.getTitle(),
                 quiz.getStartDate(),
                 quiz.getDurationInMinutes(),
-                questions
-        );
+                questions);
     }
 
-    public Quiz getById(Long quizId)
-    {
+    public Quiz getById(Long quizId) {
         return quizRepository.findById(quizId).orElse(null);
     }
 }

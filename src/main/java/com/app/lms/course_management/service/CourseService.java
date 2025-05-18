@@ -1,6 +1,6 @@
 package com.app.lms.course_management.service;
-import com.app.lms.DTO.CourseRequest;
-import com.app.lms.DTO.StudentInfoDTO;
+import com.app.lms.dto.CourseRequest;
+import com.app.lms.dto.StudentInfoDTO;
 import com.app.lms.course_management.model.Course;
 import com.app.lms.course_management.model.Enrollment;
 import com.app.lms.course_management.model.Lesson;
@@ -14,8 +14,8 @@ import jakarta.persistence.EntityNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.stereotype.Service;
 
-import com.app.lms.DTO.LessonContentDTO;
-import com.app.lms.DTO.CourseContentDTO;
+import com.app.lms.dto.LessonContentDTO;
+import com.app.lms.dto.CourseContentDTO;
 
 import java.util.List;
 import java.util.stream.Collectors;
@@ -54,7 +54,7 @@ public class CourseService {
         lessonRepository.save(lesson);
     }
 
-    // Method to retrieve all courses and return them as CourseResponse DTOs
+    // Method to retrieve all courses and return them as CourseResponse dtos
     public List<CourseRequest> getAllCourses() {
         List<Course> courses = courseRepository.findAll();
         return courses.stream()

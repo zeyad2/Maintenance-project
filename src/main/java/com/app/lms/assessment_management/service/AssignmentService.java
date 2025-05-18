@@ -20,12 +20,10 @@ public class AssignmentService {
 
     private final AssignmentRepository assignmentRepository;
     private final CourseRepository courseRepository;
-    private final SubmissionRepository submissionRepository;
 
     public AssignmentService(AssignmentRepository assignmentRepository, CourseRepository courseRepository, SubmissionRepository submissionRepository) {
         this.assignmentRepository = assignmentRepository;
         this.courseRepository = courseRepository;
-        this.submissionRepository = submissionRepository;
     }
 
     public Assignment createAssignment(Assignment assignment, Long courseId, MultipartFile file) {

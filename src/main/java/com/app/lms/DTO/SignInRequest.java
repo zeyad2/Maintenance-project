@@ -1,4 +1,4 @@
-package com.app.lms.DTO;
+package com.app.lms.dto;
 
 import jakarta.validation.constraints.NotBlank;
 

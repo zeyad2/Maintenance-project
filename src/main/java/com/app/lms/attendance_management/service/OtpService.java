@@ -14,6 +14,8 @@ public class OtpService {
     private final OtpRepository otpRepository;
     private final CourseRepository courseRepository;
 
+        private static final Random RANDOM = new Random();
+
     public OtpService(OtpRepository otpRepository, CourseRepository courseRepository) {
         this.otpRepository = otpRepository;
         this.courseRepository = courseRepository;
@@ -33,11 +35,10 @@ public class OtpService {
     }
 
     private String generateUniqueOtpForCourse(Course course) {
-        Random random = new Random();
         String otpCode;
 
         do {
-            otpCode = String.format("%06d", random.nextInt(999999)); // Generate a random 6-digit code
+            otpCode = String.format("%06d", RANDOM.nextInt(999999)); // Generate a random 6-digit code
         } while (otpRepository.existsByCodeAndCourse(otpCode, course)); // Check for uniqueness within the course
 
         return otpCode;
