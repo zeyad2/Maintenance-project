@@ -1,12 +1,12 @@
 package com.app.lms;
 
-import com.app.lms.DTO.CourseRequest;
+import com.app.lms.dto.CourseRequest;
 import com.app.lms.course_management.model.Course;
 import com.app.lms.course_management.service.CourseService;
 import com.app.lms.course_management.service.MediaService;
 import com.app.lms.course_management.service.LessonService;
 import com.app.lms.config.JwtConfig;
-import com.app.lms.notification_management.eventBus.EventBus;
+import com.app.lms.notification_management.event_bus.event_bus;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -42,7 +42,7 @@ public class CourseControllerTest {
     private JwtConfig jwtConfig;
 
     @MockBean
-    private EventBus eventBus;
+    private event_bus event_bus;
 
     @BeforeEach
     public void setup() {
@@ -85,7 +85,7 @@ public class CourseControllerTest {
     
         // Perform the POST request with the "STUDENT" role and invalid token
         mockMvc.perform(post("/api/course/create")
-                .header("Authorization", "Bearer invalidToken")  // Passing an invalid token (not used for role, just for test context)
+                .header("Authorization", "Bearer invalidtoken")  // Passing an invalid token (not used for role, just for test context)
                 .contentType(MediaType.APPLICATION_JSON)
                 .content("{\"title\": \"Test Course\", \"description\": \"Test Course Description\", \"duration\": \"10 hours\"}"))
                 .andExpect(status().isForbidden())  // Expect 403 Forbidden due to lack of "INSTRUCTOR" role

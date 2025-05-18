@@ -15,16 +15,16 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.app.lms.DTO.QuizDetailsDTO;
-import com.app.lms.DTO.QuizRequest;
-import com.app.lms.DTO.QuizResponseDTO;
-import com.app.lms.DTO.SubmitQuizRequest;
+import com.app.lms.dto.QuizDetailsDTO;
+import com.app.lms.dto.QuizRequest;
+import com.app.lms.dto.QuizResponseDTO;
+import com.app.lms.dto.SubmitQuizRequest;
 import com.app.lms.assessment_management.model.Quiz;
 import com.app.lms.assessment_management.model.QuizAttempt;
 import com.app.lms.assessment_management.service.QuizService;
 import com.app.lms.config.JwtConfig;
-import com.app.lms.notification_management.eventBus.EventBus;
-import com.app.lms.notification_management.eventBus.events.QuizCreatedEvent;
+import com.app.lms.notification_management.event_bus.event_bus;
+import com.app.lms.notification_management.event_bus.events.QuizCreatedEvent;
 
 import jakarta.validation.Valid;
 
@@ -34,13 +34,13 @@ public class QuizController {
 
     private final QuizService quizService;
     private final JwtConfig jwtConfig;
-    private final EventBus eventBus;
+    private final event_bus event_bus;
     private final CourseService courseService;
 
-    QuizController(QuizService quizService, JwtConfig jwtConfig, EventBus eventBus, CourseService courseService) {
+    QuizController(QuizService quizService, JwtConfig jwtConfig, event_bus event_bus, CourseService courseService) {
         this.quizService = quizService;
         this.jwtConfig = jwtConfig;
-        this.eventBus = eventBus;
+        this.event_bus = event_bus;
         this.courseService = courseService;
     }
 
@@ -59,7 +59,7 @@ public class QuizController {
 
         Quiz quiz = quizService.createQuiz(request);
         QuizCreatedEvent event = new QuizCreatedEvent(quiz.getId());
-        eventBus.publish(event);
+        event_bus.publish(event);
 
         return new ResponseEntity<>("Quiz created successfully with ID: " + quiz.getId(), HttpStatus.CREATED);
     }

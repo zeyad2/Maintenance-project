@@ -5,7 +5,7 @@ import com.app.lms.assessment_management.model.Submission;
 import com.app.lms.assessment_management.repository.FeedbackRepository;
 import com.app.lms.assessment_management.repository.SubmissionRepository;
 import org.springframework.stereotype.Service;
-import com.app.lms.DTO.FeedbackRequest;
+import com.app.lms.dto.FeedbackRequest;
 
 
 
@@ -58,7 +58,7 @@ public class FeedbackService {
             );
         }
 
-        // 3. Map to DTO and return
+        // 3. Map to dto and return
         FeedbackRequest request = new FeedbackRequest();
         request.setSubmissionID(submissionId);
         request.setComment(feedback.getComments());

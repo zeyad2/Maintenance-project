@@ -1,6 +1,6 @@
 package com.app.lms.notification_management.notification;
 
-import com.app.lms.DTO.NotificationDTO;
+import com.app.lms.dto.NotificationDTO;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 

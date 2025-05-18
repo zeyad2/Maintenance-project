@@ -1,6 +1,6 @@
 package com.app.lms.user_management.controller;
 
-import com.app.lms.DTO.ProfileDTO;
+import com.app.lms.dto.ProfileDTO;
 import com.app.lms.config.JwtConfig;
 import com.app.lms.user_management.model.User;
 import com.app.lms.user_management.service.UserService;

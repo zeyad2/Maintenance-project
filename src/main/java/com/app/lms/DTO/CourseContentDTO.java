@@ -1,7 +1,7 @@
-package com.app.lms.DTO;
+package com.app.lms.dto;
 import java.util.List;
 
-public class CourseContentDTO {
+public class CourseContentDTO{
     private Long id;
     private String title;
     private String description;

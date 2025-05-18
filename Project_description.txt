@@ -18,7 +18,7 @@ Instructors can create, update, delete, and list courses (CourseController).
 
 Within each course, they can add lessons (title, content), and upload materials.
 
-Upon lesson creation, the system publishes an AddedLessonEvent on an in‑memory EventBus, which triggers notifications to enrolled students.
+Upon lesson creation, the system publishes an AddedLessonEvent on an in‑memory event_bus, which triggers notifications to enrolled students.
 
 Enrollment & notifications
 
@@ -48,7 +48,7 @@ Standard Spring Data JPA repositories provide CRUD operations.
 
 Validation & error handling
 
-DTOs (SignupRequest, SignInRequest, LessonRequest, etc.) use Jakarta Validation (@Valid).
+dtos (SignupRequest, SignInRequest, LessonRequest, etc.) use Jakarta Validation (@Valid).
 
 Controllers return appropriate HTTP status codes: 201 Created, 200 OK, 400 Bad Request, etc.
 

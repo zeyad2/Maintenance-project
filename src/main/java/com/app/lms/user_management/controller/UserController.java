@@ -6,8 +6,8 @@ import org.springframework.web.bind.annotation.*;
 import com.app.lms.user_management.service.UserService;
 import com.app.lms.user_management.service.AuthService;
 import jakarta.validation.Valid;
-import com.app.lms.DTO.SignupRequest;
-import com.app.lms.DTO.SignInRequest;
+import com.app.lms.dto.SignupRequest;
+import com.app.lms.dto.SignInRequest;
 
 @RestController
 @RequestMapping("/api/auth")

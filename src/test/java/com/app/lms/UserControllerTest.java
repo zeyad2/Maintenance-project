@@ -1,6 +1,6 @@
 package com.app.lms;
-import com.app.lms.DTO.SignInRequest;
-import com.app.lms.DTO.SignupRequest;
+import com.app.lms.dto.SignInRequest;
+import com.app.lms.dto.SignupRequest;
 import com.app.lms.user_management.controller.UserController;
 import com.app.lms.user_management.service.AuthService;
 import com.app.lms.user_management.service.UserService;

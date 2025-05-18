@@ -1,7 +1,7 @@
 package com.app.lms.assessment_management.service;
 
-import com.app.lms.DTO.FeedbackDTO;
-import com.app.lms.DTO.QuizAttemptDTO;
+import com.app.lms.dto.FeedbackDTO;
+import com.app.lms.dto.QuizAttemptDTO;
 import com.app.lms.assessment_management.model.Feedback;
 import com.app.lms.assessment_management.model.QuizAttempt;
 import com.app.lms.assessment_management.repository.FeedbackRepository;

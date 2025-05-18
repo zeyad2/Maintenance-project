@@ -30,7 +30,7 @@ public class QuestionController {
 
     // Create a new question
     @PostMapping("/create")
-    public ResponseEntity<?> createAndAddToBank(@RequestHeader("Authorization") String token, @RequestParam Long courseId, @RequestBody @Valid Question question) {
+    public ResponseEntity<?> createAndAddtoBank(@RequestHeader("Authorization") String token, @RequestParam Long courseId, @RequestBody @Valid Question question) {
         String role = jwtConfig.getRoleFromToken(token);
         Long instructorId = jwtConfig.getUserIdFromToken(token);
 
